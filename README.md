@@ -58,10 +58,10 @@ Steps 1 - 3 are one time only steps.
 
 1. Set the appropriate values for the below environment variables: 
 ```
-export POSTGRESS_USERNAME=<postgress database username>
-export POSTGRESS_PASSWORD=<postgress database password>
-export POSTGRESS_DB=<postgress dababase name>
-export POSTGRESS_HOST=<postgress database instance hostname>
+export POSTGRES_USERNAME=<postgress database username>
+export POSTGRES_PASSWORD=<postgress database password>
+export POSTGRES_DB=<postgress dababase name>
+export POSTGRES_HOST=<postgress database instance hostname>
 export AWS_REGION=<aws region where bucket and database are located>
 export AWS_PROFILE=<aws profile for credentials>
 export AWS_BUCKET=<aws bucket name for storing images>
@@ -117,13 +117,38 @@ Verify running the below command on terminal
 
 2. Setup additional environment variables.
 ```
-export AWS_CREDENTIALS=<base64 encoded AWS credentials file>
-export POSTGRESS_USERNAME=<base64 encoded POSTGRESS username>
-export POSTGRESS_PASSWORD=<base64 encoded POSTGRESS password>
+###Create Kubernetes Components (Configmaps and Secrets)
+
+Encrypt your database username and password using base64 using the following commands:
+
+- echo POSTGRESS_PASSWORD | base64
+
+- echo POSTGRESS_USERNAME | base64 Encrypt your aws file using base64 using the following commands:
+
+- cat ~/.aws/credentials | base64
+
+Add these values in the appropriate places in your env-secret.yaml, aws-secret.yaml, and env-configmap.yaml.
+
+###Setup Kubernetes Environment
+
 ```
 
 3. Preparing files and deploying : 
 ```
+
+Load secret files:
+
+kubectl apply -f aws-secret.yaml
+
+kubectl apply -f env-secret.yaml
+
+kubectl apply -f env-configmap.yaml Apply all other yaml files:
+
+kubectl apply -f .
+
+(or)
+
+
 chmod 755 udacity-c3-deployment/k8s/kube_deploy.sh
 ./udacity-c3-deployment/k8s/kube_deploy.sh
 ```
@@ -152,19 +177,6 @@ Open localhost:8100 in browser.
 
 ***
 
-### Deploying and running on AWS kubernetes cluster.
-
-1. Setup AWS infrastructure and install kubernetes cluster.
-
-Follow instructions on https://github.com/kubermatic/kubeone/blob/master/docs/quickstart-aws.md
-
-The kubeone/terraform config that I used is available under udacity-c3-deployment/kuneone. Feel free to setup your own configuration.
-
-2. Deploying
-
-Deploying is done in the same way as for local kubernetes cluster. If you have setup the KUBECONFIG env variable as instructed in the link above. Just follow steps 2-6 of previous section to deploy on AWS.
-
-***
 
 ### Using Travis CI to deploy on AWS infrastructure.
 
@@ -177,14 +189,14 @@ DOCKER_USERNAME=<dockerhub username>
 DOCKER_PASSWORD=<dockerhub password>
 KUBE_CONFIG=<base64 encoded kubeconfig file that was generated for the aws infra>
 AWS_CREDENTIALS=<base64 encoded AWS IAM credentials with adequate policy>
-POSTGRESS_USERNAME=<base64 encoded postgress db username>
-POSTGRESS_PASSWORD=<base64 encoded postgress db password>
+POSTGRES_USERNAME=<base64 encoded postgress db username>
+POSTGRES_PASSWORD=<base64 encoded postgress db password>
 AWS_BUCKET=<aws bucket name for storing app images>
 AWS_PROFILE=<aws profile>
 AWS_REGION=<aws region>
 JWT_SECRET=<secret string for encrypting app passwords>
-POSTGRESS_DB=<postgress db name>
-POSTGRESS_HOST=<postgress db instance hostname>
+POSTGRES_DB=<postgress db name>
+POSTGRES_HOST=<postgress db instance hostname>
 ```
 3. Trigger a build from the Travis CI dashboard.
 
@@ -192,10 +204,10 @@ POSTGRESS_HOST=<postgress db instance hostname>
 
 ### Public Images for the project - 
 
-https://hub.docker.com/repository/docker/girishnaik/reverseproxy
-https://hub.docker.com/repository/docker/girishnaik/udacity-frontend
-https://hub.docker.com/repository/docker/girishnaik/udacity-restapi-user
-https://hub.docker.com/repository/docker/girishnaik/udacity-restapi-feed
+https://hub.docker.com/repository/docker/xlsarathchandra/reverseproxy
+https://hub.docker.com/repository/docker/xlsarathchandra/udacity-frontend
+https://hub.docker.com/repository/docker/xlsarathchandra/udacity-restapi-user
+https://hub.docker.com/repository/docker/xlsarathchandra/udacity-restapi-feed
 
 ***
 
