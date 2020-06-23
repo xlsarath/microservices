@@ -129,12 +129,11 @@ Encrypt your database username and password using base64 using the following com
 
 Add these values in the appropriate places in your env-secret.yaml, aws-secret.yaml, and env-configmap.yaml.
 
-###Setup Kubernetes Environment
-
 ```
 
 3. Preparing files and deploying : 
 ```
+###Setup Kubernetes Environment
 
 Load secret files:
 
